@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  # Jupyter Notebook service
+  glue-jupyter:
+    build: .
+    container_name: aws-glue-jupyter
+    ports:
+      - "8888:8888" # Jupyter Notebook
+      - "4040:4040" # Spark UI
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    command: ["/home/glue_user/jupyter/jupyter_start.sh"]
+    stdin_open: true
+    tty: true
+
+  # Zeppelin Notebook service
+  glue-zeppelin:
+    build: .
+    container_name: aws-glue-zeppelin
+    ports:
+      - "8080:8080" # Zeppelin UI
+      - "4041:4040" # Spark UI
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    command: ["/home/glue_user/zeppelin/bin/zeppelin.sh"]
+    stdin_open: true
+    tty: true
+
+  # PySpark shell service
+  glue-pyspark:
+    build: .
+    container_name: aws-glue-pyspark
+    ports:
+      - "4042:4040" # Spark UI
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    command: ["pyspark"]
+    stdin_open: true
+    tty: true
+
+  # Pytest service for running tests
+  glue-pytest:
+    build: .
+    container_name: aws-glue-pytest
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    working_dir: /home/glue_user/workspace
+    command: ["python", "-m", "pytest", "tests/", "-v"]
+    profiles:
+      - test
+
+  # Spark Submit service for running ETL jobs
+  glue-spark-submit:
+    build: .
+    container_name: aws-glue-spark-submit
+    ports:
+      - "4043:4040" # Spark UI
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    working_dir: /home/glue_user/workspace
+    profiles:
+      - spark-submit
+
+  # General shell service
+  glue-shell:
+    build: .
+    container_name: aws-glue-shell
+    volumes:
+      - .:/home/glue_user/workspace:rw
+      - ~/.aws:/home/glue_user/.aws:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - DISABLE_SSL=true
+    working_dir: /home/glue_user/workspace
+    stdin_open: true
+    tty: true
+    profiles:
+      - shell

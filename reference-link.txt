@@ -1,0 +1,3 @@
+https://github.com/awslabs/aws-glue-libs
+
+https://aws.amazon.com/blogs/big-data/developing-aws-glue-etl-jobs-locally-using-a-container/
