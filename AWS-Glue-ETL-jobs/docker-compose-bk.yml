@@ -2,15 +2,11 @@ version: "3.8"
 
 services:
   glue5_jupyter:
-    build: .
+    image: glue_v5_livy
     container_name: glue5_jupyter
-    ports:
-      - "8998:8998"
-      - "8888:8888"
     volumes:
       - ~/.aws:/home/hadoop/.aws
       - ./code/:/home/hadoop/workspace/
-    # environment:
-    #   - AWS_PROFILE=${PROFILE_NAME}
+    command: pyspark
     stdin_open: true
     tty: true

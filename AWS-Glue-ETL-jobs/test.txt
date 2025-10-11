@@ -1,0 +1,13 @@
+docker run -it --rm \                                                                        130 ↵
+    -v ~/.aws:/home/hadoop/.aws \
+    -v .:/home/hadoop/workspace/ \
+    --name glue5_jupyter \
+    public.ecr.aws/glue/aws-glue-libs:5 \
+    pyspark
+
+docker run -it --rm \
+    -v ~/.aws:/home/hadoop/.aws \
+    -v .:/home/hadoop/workspace/ \
+    --name glue5_jupyter \
+    public.ecr.aws/glue/aws-glue-libs \
+    pyspark

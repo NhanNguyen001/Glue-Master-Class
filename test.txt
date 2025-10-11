@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Secret
+`metadata:
+  name: data-migration
+  namespace: dataloader
+stringData:
+  bootstrap_server: "b-1.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9094,b-2.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9094,b-3.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9094"
+  security_protocol: "SSL"
+  sasl_mechanism: "SCRAM-SHA-512"
+  sasl_username: "be-data-migration"
+  sasl_password: "gftdatamigration"
+  s3_bucket: "s3://699955796816-ap-southeast-1-gft-dm-uat-athena-queries"
+  database_name: "uat_migrationdb"
+  region_name: "ap-southeast-1"
+  workgroup: "primary"
+
+----------
+~ $ kubectl get nodes
+No resources found
+~ $ kubectl get nodes
+No resources found
+~ $ kubectl get namespaces | grep dataloader
+dataloader          Active   101d
+~ $ clear
+~ $ kubectl get secret data-migration -n dataloader
+NAME             TYPE     DATA   AGE
+data-migration   Opaque   11     101d
+~ $ kubectl describe secret data-migration -n dataloader
+Name:         data-migration
+Namespace:    dataloader
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+database_name:          15 bytes
+region_name:            14 bytes
+s3_bucket:              58 bytes
+sasl_mechanism:         13 bytes
+sasl_username:          17 bytes
+aws_secret_access_key:  3 bytes
+bootstrap_server:       215 bytes
+sasl_password:          16 bytes
+security_protocol:      3 bytes
+workgroup:              7 bytes
+aws_access_key_id:      3 bytes
+~ $ echo "BOOTSTRAP_SERVER:"
+BOOTSTRAP_SERVER:
+~ $ kubectl get secret data-migration -n dataloader -o jsonpath='{.data.bootstrap_server}' | base64 -d && echo
+b-1.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9094,b-2.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9094,b-3.mskclusterapse1mg.mklja7.c2.kafka.ap-southeast-1.amazonaws.com:9"94
+~ $ echo ""
